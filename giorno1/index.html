@@ -8,15 +8,14 @@
 <style>
     body {
         margin: 0;
-        min-height: 200vh;
+        min-height: 60vh;
         background-color: #0b0f1a;
         font-family: 'Helvetica', 'Arial', sans-serif;
-        cursor: default;
         color: #cfe9ff;
         overflow-x: hidden;
     }
 
-    /* NOME FISSO IN BASSO A SINISTRA */
+    /* ===== NOME GRANDE ===== */
     .fixed-name {
         position: absolute;
         bottom: 20px;
@@ -24,14 +23,13 @@
         font-family: 'Helvetica Condensed', 'Arial Narrow', sans-serif;
         font-size: 160px;
         font-weight: bold;
-        color: #cfe9ff;
         line-height: 1.1;
         letter-spacing: -2px;
         z-index: 10;
     }
 
     .fixed-name div { display: flex; }
-    .fixed-name span { display: inline-block; transition: transform 0.3s; }
+    .fixed-name span { display: inline-block; }
 
     @keyframes bounce {
         0% { transform: translateY(0); }
@@ -41,17 +39,15 @@
         100% { transform: translateY(0); }
     }
 
-    /* LINKS IN ALTO A DESTRA */
+    /* ===== LINK IN ALTO ===== */
     .top-right-links {
         position: fixed;
         top: 20px;
         right: 20px;
         display: flex;
         gap: 40px;
-        font-family: 'Helvetica', 'Arial', sans-serif;
         font-weight: 600;
         font-size: 22px;
-        letter-spacing: 1px;
         text-transform: uppercase;
         z-index: 10;
     }
@@ -59,21 +55,15 @@
     .top-right-links a {
         color: #cfe9ff;
         text-decoration: none;
-        transition: color 0.3s, transform 0.2s;
+        transition: color 0.3s;
     }
 
-    .top-right-links a:nth-child(1):hover { color: #ff6b6b; }
-    .top-right-links a:nth-child(2):hover { color: #6bcfff; }
-    .top-right-links a:nth-child(3):hover { color: #6bff95; }
-    .top-right-links a:nth-child(4):hover { color: #ffda6b; }
-
-    /* CONTENUTO FINTA DESCRIZIONE */
+    /* ===== CONTENUTO ===== */
     .content {
         max-width: 400px;
-        margin: 1000px 40px 100px 40px;
+        margin: 900px 40px 100px 40px;
         padding: 0 20px;
         font-size: 20px;
-        color: #cfe9ff;
         opacity: 0;
         transform: translateY(50px);
         transition: opacity 1s ease, transform 1s ease, left 0.2s ease;
@@ -81,44 +71,64 @@
         left: 0;
     }
 
-    .content.visible { opacity: 1; transform: translateY(0); }
+    .content.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-    .content h1 { font-family: 'Helvetica Condensed', 'Arial Narrow', sans-serif; font-size: 48px; margin-bottom: 20px; }
-    .content p { margin-bottom: 20px; }
+    .content h1 {
+        font-family: 'Helvetica Condensed', 'Arial Narrow', sans-serif;
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
 
-    /* BARRA SOCIAL IN BASSO STATICA */
+    .content p {
+        margin-bottom: 20px;
+    }
+
+    /* ===== SOCIAL (SCROLL REVEAL) ===== */
     .social-bar {
         position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background: #0b0f1a;
+        bottom: 20px;
+        right: 20px;
         display: flex;
-        justify-content: center;
-        gap: 60px;
-        padding: 15px 0;
-        border-top: 1px solid #cfe9ff33;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 1s ease, transform 1s ease;
         z-index: 10;
+    }
+
+    .social-bar.visible {
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .social-bar a {
         color: #cfe9ff;
         text-decoration: none;
-        font-weight: bold;
-        font-size: 24px;
+        font-weight: 600;
+        font-size: 20px;
         transition: color 0.3s;
     }
 
-    .social-bar a:hover { color: #ff6b6b; }
+    .social-bar a:hover {
+        color: #ff6b6b;
+    }
 </style>
 </head>
+
 <body>
 
-<div class="fixed-name" id="fixedName">
+<!-- NOME -->
+<div class="fixed-name">
     <div id="line1"></div>
     <div id="line2"></div>
 </div>
 
+<!-- LINK ALTO -->
 <div class="top-right-links">
     <a href="#">Esercizio 1</a>
     <a href="#">Esercizio 2</a>
@@ -126,63 +136,69 @@
     <a href="#">Esercizio 4</a>
 </div>
 
+<!-- CONTENUTO -->
 <div class="content" id="content">
-    <h1>sottotitolo</h1>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget libero ut velit hendrerit tincidunt.</p>
-    <p>Fusce at sapien eget justo varius hendrerit. Donec dignissim, nisl a volutpat hendrerit, sapien urna facilisis elit.</p>
-    <p>Aliquam erat volutpat. Integer a ipsum non est blandit porttitor. Curabitur ac tortor sit amet eros gravida ullamcorper.</p>
-    <p>Nullam sit amet turpis sed justo euismod ultricies. Ut id turpis nec justo ullamcorper pulvinar.</p>
+    <h1>Portfolio</h1>
+    <p>Qui si presentano una serie di esercizi realizzati durante un seminario di codice</p>
+    <p>Fusce at sapien eget justo varius hendrerit.</p>
+    <p>Aliquam erat volutpat. Integer a ipsum non est blandit porttitor.</p>
 </div>
 
-<div class="social-bar">
+<!-- SOCIAL -->
+<div class="social-bar" id="social">
     <a href="#">Instagram</a>
     <a href="#">LinkedIn</a>
     <a href="#">Mail</a>
 </div>
 
 <script>
-    // Creazione lettere del nome
+    /* ===== LETTERE NOME ===== */
     const line1Text = "Greta";
     const line2Text = "Lopopolo";
-    const line1Div = document.getElementById('line1');
-    const line2Div = document.getElementById('line2');
 
-    function createLetters(text, container) {
-        text.split('').forEach(char => {
-            const span = document.createElement('span');
+    function createLetters(text, containerId) {
+        const container = document.getElementById(containerId);
+        text.split("").forEach(char => {
+            const span = document.createElement("span");
             span.textContent = char;
             container.appendChild(span);
         });
     }
 
-    createLetters(line1Text, line1Div);
-    createLetters(line2Text, line2Div);
+    createLetters(line1Text, "line1");
+    createLetters(line2Text, "line2");
 
-    
-    const allSpans = document.querySelectorAll('.fixed-name span');
-    allSpans.forEach((span, index) => {
-        span.addEventListener('mouseenter', () => {
-            span.style.animation = 'none';
-            setTimeout(() => { span.style.animation = `bounce 0.6s ease`; }, index * 50);
+    document.querySelectorAll(".fixed-name span").forEach((span, i) => {
+        span.addEventListener("mouseenter", () => {
+            span.style.animation = "none";
+            setTimeout(() => {
+                span.style.animation = "bounce 0.6s ease";
+            }, i * 40);
         });
     });
 
+    /* ===== SCROLL REVEAL ===== */
+    const content = document.getElementById("content");
+    const social = document.getElementById("social");
 
-    const content = document.getElementById('content');
     const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-            if(entry.isIntersecting) content.classList.add('visible');
+            if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+            }
         });
     }, { threshold: 0.1 });
-    observer.observe(content);
 
-   R
-    content.addEventListener('mouseenter', () => {
-        content.style.transition = 'left 0.2s ease';
-        content.style.left = '200px'; 
+    observer.observe(content);
+    observer.observe(social);
+
+    /* ===== MICRO SLIDE CONTENUTO ===== */
+    content.addEventListener("mouseenter", () => {
+        content.style.left = "200px";
     });
-    content.addEventListener('mouseleave', () => {
-        content.style.left = '0'; 
+
+    content.addEventListener("mouseleave", () => {
+        content.style.left = "0";
     });
 </script>
 
