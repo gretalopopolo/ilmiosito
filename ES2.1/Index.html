@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.min.js"></script>
+</head>
+<body>
+
+<script>
+function setup() {
+    createCanvas(500, 500);
+    background(200, 200, 200);
+}  
+
+function draw() {
+    noStroke();
+    
+    // Colore basato sulla posizione del mouse
+    fill(mouseX, mouseY, 0);
+    
+    // Diametro variabile con sin
+    let diametro = sin(frameCount * 0.05) * 127 + 128;
+    
+    // Ellissi
+    ellipse(mouseX, mouseY, diametro, diametro);
+    ellipse(width - mouseX, mouseY, diametro, diametro);
+}
+</script>
+
+</body>
+</html>
