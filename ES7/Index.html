@@ -34,12 +34,12 @@ function setup() {
     createCanvas(512, 384);
     colorMode(HSB, 360, 100, 100);
 
-    // immagine cover + zoom leggero
+   
     let scale = max(width / faccione.width, height / faccione.height) * 1.2;
     imgW = faccione.width * scale;
     imgH = faccione.height * scale;
 
-    // spostiamo l'immagine più verso il basso
+    
     imgOX = (width - imgW) / 2;
     imgOY = (height - imgH) / 2 + 60;
 
@@ -63,39 +63,39 @@ function draw() {
             let px = ox + i * d;
             let py = oy + j * d;
 
-            // onda leggera
+            
             let wave = sin(frameCount * 0.04 + i * 0.4 + j * 0.4) * 4;
 
             let wx = px;
             let wy = py + wave;
 
-            // repulsione mouse (RANGE MOLTO PIU' AMPIO)
+            
             let dx = wx - mouseX;
             let dy = wy - mouseY;
             let distMouse = sqrt(dx * dx + dy * dy);
 
-            let radius = 600; // range molto più grande
+            let radius = 600; 
             if (distMouse < radius) {
                 let force = map(distMouse, 0, radius, 15, 0);
                 wx += (dx / distMouse) * force;
                 wy += (dy / distMouse) * force;
             }
 
-            // coordinate immagine
+            
             let ix = wx - imgOX;
             let iy = wy - imgOY;
 
             if (ix >= 0 && ix < imgW && iy >= 0 && iy < imgH) {
                 let c = faccione.get(ix, iy);
 
-                // rendiamo l'immagine più chiara
+                
                 let h = hue(color(c));
                 let s = saturation(color(c));
                 let b = brightness(color(c));
-                b = min(b + 30, 100); // aumento luminosità
+                b = min(b + 30, 100); 
                 fill(h, s, b);
 
-                // dimensione pallini leggermente maggiore nelle zone chiare
+                
                 let lum = (red(c) + green(c) + blue(c)) / 3;
                 let r = map(lum, 0, 255, 3, 9);
 
