@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vertical Typography</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    #textInput {
+      position: fixed;
+      top: 10px;
+      left: 20px;
+      width: 260px;          /* finestra più piccola */
+      padding: 8px;
+      font-size: 16px;
+      border: none;
+      outline: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<input id="textInput" type="text" placeholder="Scrivi qui..." />
+
+<script>
+let letters = [];
+let txt = "";
+
+// caratteri più grandi
+let fontSize = 64;
+let lineHeight = 80;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  textFont("Georgia");
+  textSize(fontSize);
+  textAlign(LEFT, CENTER);
+
+  select("#textInput").input(updateText);
+}
+
+function updateText() {
+  txt = this.value();
+  generateLetters();
+}
+
+function generateLetters() {
+  letters = [];
+
+  let marginX = 340;  // spazio per l'input a sinistra
+  let marginY = 140;
+  let maxWidth = 420; // BLOCCO STRETTO → sviluppo verticale
+
+  let x = marginX;
+  let y = marginY;
+
+  for (let i = 0; i < txt.length; i++) {
+    let ch = txt.charAt(i);
+    let w = textWidth(ch);
+
+    // va a capo molto prima → colonna verticale
+    if (x + w > marginX + maxWidth) {
+      x = marginX;
+      y += lineHeight;
+    }
+
+    letters.push({
+      char: ch,
+      ox: x,
+      oy: y,
+      phase: random(TWO_PI),
+      speed: random(0.01, 0.025)
+    });
+
+    x += w + 10;
+  }
+}
+
+function draw() {
+  background(15);
+
+  fill(235);
+  noStroke();
+
+  for (let l of letters) {
+    // movimento fluido, elegante
+    let floatX = sin(frameCount * l.speed + l.phase) * 12;
+    let floatY = cos(frameCount * l.speed + l.phase) * 8;
+
+    text(l.char, l.ox + floatX, l.oy + floatY);
+  }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  generateLetters();
+}
+</script>
+
+</body>
+</html>
