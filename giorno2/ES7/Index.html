@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monet Style Portrait</title>
+<title>Monet Style Portrait - Interactive</title>
 
 <script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.min.js"></script>
 
@@ -30,7 +30,7 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(800, 700); // canvas più alto
+    createCanvas(800, 700);
     colorMode(HSB, 360, 100, 100);
     noStroke();
     frameRate(30);
@@ -41,7 +41,7 @@ function setup() {
     imgH = faccione.height * scale;
 
     imgOX = (width - imgW) / 2;
-    imgOY = (height - imgH) / 2 + 80; // spostata più in basso per capelli visibili
+    imgOY = (height - imgH) / 2 + 80;
 
     faccione.resize(imgW, imgH);
 }
@@ -56,6 +56,10 @@ function draw() {
     let ox = (width - (numH - 1) * d) / 2;
     let oy = (height - (numV - 1) * d) / 2;
 
+    // controlla se il mouse è sopra l'immagine
+    let mouseOverImage = mouseX >= imgOX && mouseX <= imgOX + imgW &&
+                         mouseY >= imgOY && mouseY <= imgOY + imgH;
+
     for (let j = 0; j < numV; j++) {
         for (let i = 0; i < numH; i++) {
 
@@ -66,15 +70,17 @@ function draw() {
             let wx = px + random(-1.5,1.5);
             let wy = py + wave + random(-1.5,1.5);
 
-            // mouse interaction ancora più estesa
-            let dx = wx - mouseX;
-            let dy = wy - mouseY;
-            let distMouse = sqrt(dx * dx + dy * dy);
-            let radius = 900; // raggio aumentato per effetto mouse
-            if (distMouse < radius) {
-                let force = map(distMouse, 0, radius, 20, 0); // forza maggiore
-                wx += (dx / distMouse) * force;
-                wy += (dy / distMouse) * force;
+            if (mouseOverImage) {
+                // calcola distanza dal cursore
+                let dx = wx - mouseX;
+                let dy = wy - mouseY;
+                let distMouse = sqrt(dx * dx + dy * dy);
+                let radius = 600; 
+                if (distMouse < radius) {
+                    let force = map(distMouse, 0, radius, 25, 0); 
+                    wx += (dx / distMouse) * force + random(-10,10);
+                    wy += (dy / distMouse) * force + random(-10,10);
+                }
             }
 
             let ix = wx - imgOX;
