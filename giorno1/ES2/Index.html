@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circle Flower Trail</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    
+    <script>
+        let lastMouseY = 0;
+        let flowerSize = 60;
+        let rotation = 0;
+        let colorShift = 0;
+        let circleTrails = [];
+        const maxTrails = 15;
+        
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            lastMouseY = mouseY;
+            noCursor();
+            angleMode(DEGREES);
+        }
+        
+        function draw() {
+            // Sfondo con fade molto morbido
+            fill(0, 0, 0, 15);
+            noStroke();
+            rect(0, 0, width, height);
+            
+            // Calcolo direzione verticale
+            let mouseDeltaY = mouseY - lastMouseY;
+            lastMouseY = mouseY;
+            
+            // Controllo dimensione con interpolazione morbida
+            if (mouseDeltaY < 0) {
+                flowerSize = max(30, flowerSize - abs(mouseDeltaY) * 0.2);
+            } else if (mouseDeltaY > 0) {
+                flowerSize = min(120, flowerSize + mouseDeltaY * 0.2);
+            }
+            
+            // Animazioni fluide
+            rotation += 0.3;
+            colorShift += 0.8;
+            
+            // Crea nuovo fiore nella posizione corrente
+            circleTrails.push({
+                x: mouseX,
+                y: mouseY,
+                size: flowerSize,
+                hue: colorShift % 360,
+                rotation: rotation,
+                alpha: 255
+            });
+            
+            // Mantieni solo gli ultimi trail
+            if (circleTrails.length > maxTrails) {
+                circleTrails.shift();
+            }
+            
+            // Aggiorna alpha dei trail per scia morbida
+            for (let i = 0; i < circleTrails.length; i++) {
+                let age = i / circleTrails.length;
+                circleTrails[i].alpha = 255 * (1 - age * 0.7);
+                circleTrails[i].size = flowerSize * (1 - age * 0.3);
+            }
+            
+            // Disegna tutti i trail in ordine (dal più vecchio al più nuovo)
+            for (let i = 0; i < circleTrails.length; i++) {
+                let trail = circleTrails[i];
+                drawCircleFlower(trail.x, trail.y, trail.size, trail.hue, trail.rotation, trail.alpha);
+            }
+        }
+        
+        function drawCircleFlower(x, y, size, baseHue, rotation, alpha) {
+            push();
+            translate(x, y);
+            rotate(rotation);
+            colorMode(HSB);
+            
+            // Strato 1: Cerchi esterni grandi (8 cerchi)
+            for (let i = 0; i < 8; i++) {
+                let angle = i * 45;
+                let circleHue = (baseHue + i * 40) % 360;
+                let distance = size * 0.7;
+                
+                push();
+                rotate(angle);
+                translate(distance, 0);
+                
+                // Cerchio grande principale
+                fill(circleHue, 80, 100, alpha * 0.9);
+                noStroke();
+                ellipse(0, 0, size * 0.3, size * 0.3);
+                
+                // Cerchio interno più piccolo
+                fill(circleHue, 60, 100, alpha * 0.8);
+                ellipse(0, 0, size * 0.2, size * 0.2);
+                
+                // Punto centrale
+                fill(0, 0, 100, alpha * 0.9);
+                ellipse(0, 0, size * 0.05, size * 0.05);
+                
+                pop();
+            }
+            
+            // Strato 2: Cerchi intermedi (16 cerchi)
+            for (let i = 0; i < 16; i++) {
+                let angle = i * 22.5 + rotation * 0.5;
+                let circleHue = (baseHue + i * 20 + 180) % 360;
+                let distance = size * 0.45;
+                
+                push();
+                rotate(angle);
+                translate(distance, 0);
+                
+                // Cerchio intermedio
+                fill(circleHue, 90, 100, alpha * 0.7);
+                ellipse(0, 0, size * 0.2, size * 0.2);
+                
+                // Cerchietto interno
+                fill(circleHue, 50, 100, alpha * 0.9);
+                ellipse(0, 0, size * 0.08, size * 0.08);
+                
+                pop();
+            }
+            
+            // Strato 3: Cerchi interni (24 cerchi)
+            for (let i = 0; i < 24; i++) {
+                let angle = i * 15 + rotation * 0.3;
+                let circleHue = (baseHue + i * 10) % 360;
+                let distance = size * 0.2;
+                
+                push();
+                rotate(angle);
+                translate(distance, 0);
+                
+                // Cerchio interno piccolo
+                fill(circleHue, 100, 100, alpha * 0.6);
+                ellipse(0, 0, size * 0.12, size * 0.12);
+                
+                pop();
+            }
+            
+            // Centro del fiore: cerchi concentrici
+            // Cerchio centrale grande
+            fill(baseHue, 100, 100, alpha * 0.9);
+            ellipse(0, 0, size * 0.25, size * 0.25);
+            
+            // Cerchio centrale medio
+            fill((baseHue + 60) % 360, 100, 100, alpha * 0.8);
+            ellipse(0, 0, size * 0.15, size * 0.15);
+            
+            // Cerchio centrale piccolo
+            fill(0, 0, 100, alpha);
+            ellipse(0, 0, size * 0.06, size * 0.06);
+            
+            // Cerchi rotanti attorno al centro (12 cerchi)
+            for (let i = 0; i < 12; i++) {
+                let angle = i * 30 + rotation * 1.2;
+                let circleHue = (baseHue + i * 30 + 90) % 360;
+                let distance = size * 0.1;
+                
+                let circleX = cos(angle) * distance;
+                let circleY = sin(angle) * distance;
+                
+                fill(circleHue, 100, 100, alpha * 0.8);
+                ellipse(circleX, circleY, size * 0.05, size * 0.05);
+                
+                // Cerchio ancora più piccolo dentro
+                fill(0, 0, 100, alpha * 0.9);
+                ellipse(circleX, circleY, size * 0.02, size * 0.02);
+            }
+            
+            // Cerchi di connessione (linee morbide di cerchi)
+            for (let i = 0; i < 8; i++) {
+                let startAngle = i * 45;
+                let endAngle = startAngle + 180;
+                let circleHue = (baseHue + i * 45) % 360;
+                
+                // 5 cerchi di connessione tra i cerchi esterni
+                for (let j = 0; j < 5; j++) {
+                    let interp = j / 4;
+                    let angle = lerp(startAngle, endAngle, interp);
+                    let distance = size * (0.5 + interp * 0.2);
+                    
+                    push();
+                    rotate(angle);
+                    translate(distance, 0);
+                    
+                    fill(circleHue, 70, 100, alpha * (0.7 - interp * 0.3));
+                    ellipse(0, 0, size * 0.08, size * 0.08);
+                    
+                    pop();
+                }
+            }
+            
+            pop();
+        }
+        
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+        
+        // Click per effetto speciale
+        function mousePressed() {
+            // Aumenta temporaneamente la dimensione
+            flowerSize = min(150, flowerSize + 40);
+            
+            // Aggiungi trail extra per effetto
+            for (let i = 0; i < 5; i++) {
+                let offsetX = random(-20, 20);
+                let offsetY = random(-20, 20);
+                
+                circleTrails.push({
+                    x: mouseX + offsetX,
+                    y: mouseY + offsetY,
+                    size: flowerSize * 0.8,
+                    hue: (colorShift + random(120)) % 360,
+                    rotation: rotation + random(360),
+                    alpha: 200
+                });
+            }
+        }
+        
+        // Barra spaziatrice per reset morbido
+        function keyPressed() {
+            if (key === ' ') {
+                // Riduci gradualmente il trail invece di reset completo
+                if (circleTrails.length > 0) {
+                    circleTrails.splice(0, Math.floor(circleTrails.length / 3));
+                }
+                flowerSize = 60;
+            }
+        }
+    </script>
+</body>
+</html>
