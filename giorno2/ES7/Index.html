@@ -1,38 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>p5.js grid</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monet Style Portrait</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.min.js"></script>
 
-    <style>
-        body {
-            margin: 0;
-            background-color: black; /* <-- qui solo nero */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-    </style>
+<style>
+    body {
+        margin: 0;
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+</style>
 </head>
 
 <body>
-
 <script>
 let faccione;
 let imgW, imgH;
 let imgOX, imgOY;
 
 function preload() {
-    faccione = loadImage("selfie.png");
+    faccione = loadImage("selfie.png"); // il tuo file immagine
 }
 
 function setup() {
     createCanvas(512, 384);
     colorMode(HSB, 360, 100, 100);
+    noStroke();
+    frameRate(30);
 
     let scale = max(width / faccione.width, height / faccione.height) * 1.2;
     imgW = faccione.width * scale;
@@ -45,8 +46,8 @@ function setup() {
 }
 
 function draw() {
-    background(0);
-    noStroke();
+    // sfondo leggermente colorato per effetto pittura
+    background(20, 20, 10); 
 
     let numH = 52;
     let numV = 44;
@@ -61,15 +62,17 @@ function draw() {
             let px = ox + i * d;
             let py = oy + j * d;
 
-            let wave = sin(frameCount * 0.04 + i * 0.4 + j * 0.4) * 4;
+            // movimento tipo pennellata
+            let wave = sin(frameCount * 0.04 + i * 0.4 + j * 0.4) * random(2,5);
 
-            let wx = px;
-            let wy = py + wave;
+            // piccola casualità per effetto “sfumato”
+            let wx = px + random(-2,2);
+            let wy = py + wave + random(-2,2);
 
+            // interazione con il mouse
             let dx = wx - mouseX;
             let dy = wy - mouseY;
             let distMouse = sqrt(dx * dx + dy * dy);
-
             let radius = 600; 
             if (distMouse < radius) {
                 let force = map(distMouse, 0, radius, 15, 0);
@@ -83,21 +86,27 @@ function draw() {
             if (ix >= 0 && ix < imgW && iy >= 0 && iy < imgH) {
                 let c = faccione.get(ix, iy);
 
-                let h = hue(color(c));
-                let s = saturation(color(c));
-                let b = brightness(color(c));
-                b = min(b + 30, 100); 
-                fill(h, s, b);
+                // variazioni Monet-style nei colori
+                let h = hue(color(c)) + random(-10,10);
+                let s = saturation(color(c)) * random(0.8,1.2);
+                let b = brightness(color(c)) * random(0.8,1.1);
+
+                fill(h, s, b, 70); // trasparenza per effetto pennellata
 
                 let lum = (red(c) + green(c) + blue(c)) / 3;
-                let r = map(lum, 0, 255, 3, 9);
+                let r = map(lum, 0, 255, 4, 12); // dimensione variabile
 
-                circle(wx, wy, r);
+                // ellissi leggermente deformate per effetto pittura
+                ellipse(wx, wy, r, r * random(0.8,1.2));
+
+                // sovrapposizione di pennellate per effetto morbido
+                if (random() < 0.3) {
+                    ellipse(wx + random(-3,3), wy + random(-3,3), r*0.6, r*0.6);
+                }
             }
         }
     }
 }
 </script>
-
 </body>
 </html>
