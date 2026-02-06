@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Analytics</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    background: #000;
+    color: #fff;
+    min-height: 100vh;
+    padding: 20px;
+    opacity: 0;
+    animation: fadeIn 1.2s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ───────── HEADER + STATS + BUTTON ───────── */
+.top-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 60px;
+    margin-bottom: 50px;
+}
+
+.header {
+    flex-shrink: 0;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    color: #7fd9b5;
+    margin-top: 6px;
+}
+
+/* STATS SU TRE COLONNE */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    gap: 40px;
+    align-items: center;
+}
+
+.stat-item {
+    text-align: left;
+}
+
+.stat-number {
+    font-size: 2.7rem;
+    font-weight: 300;
+    color: #2fa97c;
+    line-height: 1.1;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: #b5e8d2;
+    margin-top: 4px;
+}
+
+.stat-conversion {
+    font-size: 0.7rem;
+    color: #7fd9b5;
+    margin-top: 2px;
+}
+
+/* BUTTON ALLINEATO CON I DATI */
+.actions {
+    display: flex;
+    align-items: flex-start;
+    margin-left: 40px;
+}
+
+.refresh-button {
+    background: transparent;
+    border: 1px solid #2fa97c;
+    color: #2fa97c;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.refresh-button:hover {
+    background: #2fa97c;
+    color: #000;
+    transform: scale(1.05);
+}
+
+/* HISTOGRAM */
+.histogram-section {
+    background: #0b0f0d;
+    border: 1px solid #1c2a23;
+    border-radius: 6px;
+    padding: 30px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.histogram-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-title {
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    color: #b5e8d2;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+}
+
+.histogram {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-left: 80px;
+}
+
+.histogram-row {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: slideInRow 0.5s ease-out forwards;
+}
+
+@keyframes slideInRow {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.row-label {
+    position: absolute;
+    left: -80px;
+    width: 70px;
+    text-align: right;
+    font-size: 0.8rem;
+    color: #7fd9b5;
+    transition: color 0.3s ease;
+}
+
+.bar-container {
+    flex: 1;
+    height: 100%;
+    position: relative;
+}
+
+.bar-rectangle {
+    position: relative;
+    height: 100%;
+    width: 0;
+    border: 1.5px solid #2fa97c;
+    border-radius: 4px;
+    background: transparent;
+    transition: width 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+/* Fill-in da sinistra verso destra al mouseover */
+.bar-rectangle.filled {
+    position: relative;
+    background: transparent;
+}
+
+/* Overlay che si espande da sinistra a destra */
+.bar-rectangle.filled::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        rgba(47, 169, 124, 0.2) 0%,
+        rgba(35, 141, 99, 0.6) 50%,
+        rgba(47, 169, 124, 0.2) 100%);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+
+/* Effetto fluido al mouseover */
+.bar-rectangle.filled:hover::after {
+    width: 100%;
+    background: linear-gradient(90deg, 
+        rgba(47, 169, 124, 0.3) 0%,
+        rgba(35, 141, 99, 0.8) 50%,
+        rgba(47, 169, 124, 0.3) 100%);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Effetto di bordo luminoso durante il fill */
+.bar-rectangle.filled:hover {
+    border-color: #33c18f;
+    box-shadow: 0 0 15px rgba(47, 169, 124, 0.4),
+                inset 0 0 10px rgba(47, 169, 124, 0.2);
+    transition: border-color 0.4s ease, 
+                box-shadow 0.4s ease;
+}
+
+/* Effetto di onda che attraversa la barra durante il fill */
+.bar-rectangle.filled::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        transparent 100%);
+    transform: translateX(-100%);
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.bar-rectangle.filled:hover::before {
+    opacity: 1;
+    transform: translateX(200%);
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease;
+}
+
+/* Etichetta che si anima al mouseover */
+.histogram-row:hover .row-label {
+    color: #33c18f;
+}
+
+/* VALUE */
+.bar-value {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    color: #000;
+    background: #b5e8d2;
+    padding: 3px 6px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.3s ease, 
+                transform 0.3s ease,
+                background 0.3s ease;
+    z-index: 3;
+}
+
+.bar-container:hover .bar-value {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.05);
+    background: #c6f0de;
+    transition: opacity 0.3s ease 0.2s, 
+                transform 0.3s ease 0.2s,
+                background 0.3s ease 0.2s;
+}
+
+.footer {
+    margin-top: 40px;
+    font-size: 0.7rem;
+    color: #7fd9b5;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .top-section {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .stats {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .actions {
+        margin-left: 0;
+        justify-content: flex-start;
+    }
+    .histogram {
+        padding-left: 60px;
+    }
+    .row-label {
+        left: -60px;
+        width: 50px;
+    }
+}
+
+/* Effetto di riempimento progressivo */
+@keyframes fillFromLeft {
+    from {
+        width: 0;
+    }
+    to {
+        width: var(--target-width);
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="top-section">
+        <div class="header">
+            <h1 class="title">Analisi spotify</h1>
+            <div class="subtitle">Anno 2024 • Dati di ascolto</div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalMinutes">21,848</div>
+                <div class="stat-label">Minuti totali</div>
+                <div class="stat-conversion">Riproduzione audio</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalHours">364</div>
+                <div class="stat-label">Ore</div>
+                <div class="stat-conversion">Equivalente</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="monthlyAvg">1,820</div>
+                <div class="stat-label">Media mesi</div>
+                <div class="stat-conversion">Minuti</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="refresh-button" id="animateButton">↻ Animate</button>
+        </div>
+    </div>
+
+    <section class="histogram-section" id="histogramSection">
+        <div class="section-title">Distribuzione mensile di ascolti</div>
+        <div class="histogram" id="histogram"></div>
+    </section>
+
+    <div class="footer">
+        
+    </div>
+
+</div>
+
+<script>
+const musicData = {
+    totalMinutes: 21848,
+    monthlyData: [
+        { short: 'GEN', minutes: 1720 },
+        { short: 'FEB', minutes: 1850 },
+        { short: 'MAR', minutes: 2100 },
+        { short: 'APR', minutes: 1950 },
+        { short: 'MAG', minutes: 2200 },
+        { short: 'GIU', minutes: 2400 },
+        { short: 'LUG', minutes: 2600 },
+        { short: 'AGO', minutes: 2450 },
+        { short: 'SET', minutes: 2300 },
+        { short: 'OTT', minutes: 2150 },
+        { short: 'NOV', minutes: 2000 },
+        { short: 'DIC', minutes: 1850 }
+    ]
+};
+
+// Funzione per animare i numeri
+function animateNumber(element, start, end, duration) {
+    const startTime = performance.now();
+    const formattedEnd = end.toLocaleString();
+    
+    function updateNumber(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const currentValue = Math.floor(start + (end - start) * easeOutQuart);
+        
+        element.textContent = currentValue.toLocaleString();
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateNumber);
+        } else {
+            element.textContent = formattedEnd;
+        }
+    }
+    
+    requestAnimationFrame(updateNumber);
+}
+
+// Funzione per animare tutte le statistiche
+function animateStats() {
+    const totalMinutesEl = document.getElementById('totalMinutes');
+    const totalHoursEl = document.getElementById('totalHours');
+    const monthlyAvgEl = document.getElementById('monthlyAvg');
+    
+    const totalMinutes = musicData.totalMinutes;
+    const totalHours = Math.floor(totalMinutes / 60);
+    const monthlyAvg = Math.floor(totalMinutes / 12);
+    
+    totalMinutesEl.textContent = '0';
+    totalHoursEl.textContent = '0';
+    monthlyAvgEl.textContent = '0';
+    
+    animateNumber(totalMinutesEl, 0, totalMinutes, 2000);
+    
+    setTimeout(() => {
+        animateNumber(totalHoursEl, 0, totalHours, 1500);
+    }, 300);
+    
+    setTimeout(() => {
+        animateNumber(monthlyAvgEl, 0, monthlyAvg, 1500);
+    }, 600);
+}
+
+// Mostra la sezione dell'istogramma
+function showHistogramSection() {
+    const histogramSection = document.getElementById('histogramSection');
+    histogramSection.classList.add('visible');
+}
+
+function createHistogram() {
+    const histogram = document.getElementById('histogram');
+    histogram.innerHTML = '';
+
+    const max = Math.max(...musicData.monthlyData.map(m => m.minutes));
+
+    animateStats();
+    showHistogramSection();
+
+    // Crea le righe dell'istogramma con ritardo progressivo
+    [...musicData.monthlyData].reverse().forEach((m, i) => {
+        const row = document.createElement('div');
+        row.className = 'histogram-row';
+        row.style.animationDelay = `${i * 80}ms`;
+
+        row.innerHTML = `
+            <div class="row-label">${m.short}</div>
+            <div class="bar-container">
+                <div class="bar-rectangle"></div>
+                <div class="bar-value">${m.minutes.toLocaleString()}</div>
+            </div>
+        `;
+
+        histogram.appendChild(row);
+
+        // Animazione delle barre
+        setTimeout(() => {
+            const bar = row.querySelector('.bar-rectangle');
+            const targetWidth = (m.minutes / max) * 100;
+            
+            // Imposta la larghezza finale
+            bar.style.width = `${targetWidth}%`;
+            
+            // Aggiungi la classe filled dopo un piccolo ritardo
+            setTimeout(() => {
+                bar.classList.add('filled');
+            }, 150);
+            
+        }, i * 80 + 100);
+    });
+
+    // Aggiungi effetti di mouseover fluido
+    setupSmoothFillEffects();
+}
+
+// Setup per effetti di fill fluido
+function setupSmoothFillEffects() {
+    const bars = document.querySelectorAll('.bar-rectangle.filled');
+    
+    bars.forEach(bar => {
+        // Rimuovi tutti i listener precedenti per evitare duplicati
+        bar.removeEventListener('mouseenter', handleMouseEnter);
+        bar.removeEventListener('mouseleave', handleMouseLeave);
+        
+        // Aggiungi nuovi listener
+        bar.addEventListener('mouseenter', handleMouseEnter);
+        bar.addEventListener('mouseleave', handleMouseLeave);
+    });
+}
+
+// Gestione mouseenter con effetto fluido
+function handleMouseEnter(e) {
+    const bar = e.currentTarget;
+    
+    // Aggiungi una transizione più fluida
+    bar.style.transition = 'border-color 0.4s ease, box-shadow 0.4s ease';
+    
+    // Aggiungi effetto di ritardo progressivo per un fill più organico
+    const rect = bar.getBoundingClientRect();
+    const xPos = e.clientX - rect.left;
+    const percentage = (xPos / rect.width) * 100;
+    
+    // Se il mouse entra da sinistra, inizia il fill da lì
+    if (percentage < 30) {
+        bar.style.setProperty('--fill-origin', 'left');
+    } else {
+        bar.style.setProperty('--fill-origin', 'center');
+    }
+}
+
+// Gestione mouseleave con effetto fluido
+function handleMouseLeave(e) {
+    const bar = e.currentTarget;
+    
+    // Transizione di uscita più lenta per un effetto più piacevole
+    bar.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+}
+
+// Inizializzazione
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        showHistogramSection();
+        createHistogram();
+    }, 300);
+    
+    document.getElementById('animateButton').addEventListener('click', createHistogram);
+});
+</script>
+</body>
+</html>
