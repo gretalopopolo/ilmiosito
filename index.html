@@ -6,112 +6,118 @@
 <title>Greta Lopopolo</title>
 
 <style>
-    body {
-        margin: 0;
-        min-height: 50vh;
-        background-color: #0b0f1a;
-        font-family: 'Helvetica', 'Arial', sans-serif;
-        color: #cfe9ff;
-        overflow-x: hidden;
-    }
+body {
+    margin: 0;
+    min-height: 50vh;
+    background-color: #0b0f1a;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #cfe9ff;
+    overflow-x: hidden;
+}
 
-    .fixed-name {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        font-family: 'Helvetica Condensed', 'Arial Narrow', sans-serif;
-        font-size: 160px;
-        font-weight: bold;
-        line-height: 1.1;
-        letter-spacing: -2px;
-        z-index: 10;
-    }
+/* ---------- NOME ---------- */
+.fixed-name {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-family: 'Helvetica Condensed', 'Arial Narrow', sans-serif;
+    font-size: 160px;
+    font-weight: bold;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    z-index: 10;
+}
 
-    .fixed-name div { display: flex; }
+.fixed-name div {
+    display: flex;
+}
 
-    .fixed-name span,
-    .interactive span {
-        display: inline-block;
-        color: #cfe9ff;
-        transition: color 0.3s ease;
-    }
+/* ---------- LETTERE INTERATTIVE (solo dove serve) ---------- */
+.fixed-name span,
+.top-right-links span {
+    display: inline-block;
+    color: #cfe9ff;
+    transition: color 0.3s ease;
+}
 
-    @keyframes bounce {
-        0% { transform: translateY(0); }
-        30% { transform: translateY(-20px); }
-        50% { transform: translateY(10px); }
-        70% { transform: translateY(-10px); }
-        100% { transform: translateY(0); }
-    }
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    30% { transform: translateY(-20px); }
+    60% { transform: translateY(6px); }
+    100% { transform: translateY(0); }
+}
 
-    .top-right-links {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        display: flex;
-        gap: 40px;
-        font-weight: 600;
-        font-size: 22px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        z-index: 10;
-    }
+/* ---------- ESERCIZI ---------- */
+.top-right-links {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 40px;
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 10;
+}
 
-    .top-right-links a {
-        text-decoration: none;
-    }
+.top-right-links a {
+    text-decoration: none;
+    color: inherit;
+}
 
-    .content {
-        max-width: 400px;
-        margin: 900px 40px 100px 40px;
-        padding: 0 20px;
-        font-size: 20px;
-        opacity: 0;
-        transform: translateY(50px);
-        transition: opacity 1s ease, transform 1s ease;
-        position: relative;
-    }
+/* ---------- CONTENUTO (PORTFOLIO A SINISTRA) ---------- */
+.content {
+    max-width: 400px;
+    margin: 900px 0 100px 40px; /* Top 900px, Right 0, Bottom 100px, Left 40px */
+    padding: 0 20px;
+    font-size: 20px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1s ease, transform 1s ease;
+}
 
-    .content.visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.content.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 
-    .content h1 {
-        font-family: 'Helvetica Condensed', 'Arial Narrow', sans-serif;
-        font-size: 48px;
-        margin-bottom: 10px;
-    }
+.content h1 {
+    font-family: 'Helvetica Condensed', 'Arial Narrow', sans-serif;
+    font-size: 48px;
+    margin-bottom: 10px;
+}
 
-    .content p {
-        margin-bottom: 20px;
-    }
+.content p {
+    margin-bottom: 20px;
+}
 
-    .social-bar {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 12px;
-        opacity: 0;
-        transform: translateY(40px);
-        transition: opacity 1s ease, transform 1s ease;
-        z-index: 10;
-    }
+/* ---------- SOCIAL ---------- */
+.social-bar {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease, transform 1s ease;
+    z-index: 10;
+}
 
-    .social-bar.visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.social-bar.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 
-    .social-bar a {
-        color: #cfe9ff;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 20px;
-    }
+.social-bar a {
+    color: #cfe9ff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 20px;
+}
 </style>
 </head>
 
@@ -123,23 +129,26 @@
     <div id="line2">Lopopolo</div>
 </div>
 
-
-<div class="top-right-links interactive">
-    <a href="#">Esercizio 1</a>
-    <a href="#">Esercizio 2</a>
-    <a href="#">Esercizio 3</a>
-    <a href="#">Esercizio 4</a>
+<!-- ESERCIZI -->
+<div class="top-right-links">
+    <a href="giorno1/ES1/index.html" class="exercise">Esercizio 1</a>
+    <a href="#" class="exercise">Esercizio 2</a>
+    <a href="#" class="exercise">Esercizio 3</a>
+    <a href="#" class="exercise">Esercizio 4</a>
 </div>
 
+   
+</div>
 
-<div class="content interactive" id="content">
+<!-- CONTENUTO STATICO A SINISTRA -->
+<div class="content" id="content">
     <h1>Portfolio</h1>
-    <p>Qui si presentano una serie di esercizi realizzati durante un seminario di codice</p>
-    <p>Fusce at sapien eget justo varius hendrerit. Donec dignissim nisl a volutpat.</p>
+    <p>Qui si presentano una serie di esercizi realizzati durante un seminario di codice.</p>
+    <p>I vari esercizi si distinguono per sperimentazione di diverse tecniche di codice.</p>
     <p>Aliquam erat volutpat. Integer a ipsum non est blandit porttitor.</p>
 </div>
 
-
+<!-- SOCIAL -->
 <div class="social-bar" id="social">
     <a href="#">Instagram</a>
     <a href="#">LinkedIn</a>
@@ -147,53 +156,76 @@
 </div>
 
 <script>
-    const colors = ["#ff6b6b", "#6bcfff", "#6bff95", "#ffda6b"];
+const colors = ["#ff6b6b", "#6bcfff", "#6bff95", "#ffda6b"];
 
-    function splitText(element) {
-        const text = element.innerText;
-        element.innerHTML = "";
+/* ---------- SPLIT SOLO NOME ---------- */
+function splitBouncy(el) {
+    const text = el.textContent;
+    el.textContent = "";
 
-        text.split("").forEach((char, index) => {
-            const span = document.createElement("span");
-            span.innerHTML = char === " " ? "&nbsp;" : char;
+    [...text].forEach(char => {
+        const span = document.createElement("span");
+        span.innerHTML = char === " " ? "&nbsp;" : char;
 
-            span.addEventListener("mouseenter", () => {
-                span.style.animation = "none";
-                span.style.color = colors[Math.floor(Math.random() * colors.length)];
-                setTimeout(() => {
-                    span.style.animation = "bounce 0.6s ease";
-                }, index * 20);
-            });
-
-            span.addEventListener("mouseleave", () => {
-                span.style.color = "#cfe9ff";
-            });
-
-            element.appendChild(span);
+        span.addEventListener("mouseenter", () => {
+            span.style.color = colors[Math.floor(Math.random() * colors.length)];
+            span.style.animation = "bounce 0.5s ease";
         });
-    }
 
-    
-    splitText(document.getElementById("line1"));
-    splitText(document.getElementById("line2"));
-
-   
-    document.querySelectorAll(".top-right-links a").forEach(splitText);
-
-    
-    document.querySelectorAll(".content p").forEach(splitText);
-
-    
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("visible");
-            }
+        span.addEventListener("animationend", () => {
+            span.style.animation = "";
         });
-    }, { threshold: 0.1 });
 
-    observer.observe(document.getElementById("content"));
-    observer.observe(document.getElementById("social"));
+        span.addEventListener("mouseleave", () => {
+            span.style.color = "#cfe9ff";
+        });
+
+        el.appendChild(span);
+    });
+}
+
+/* ---------- SPLIT SOLO ESERCIZI ---------- */
+function splitExercises(el) {
+    const text = el.textContent;
+    el.textContent = "";
+
+    [...text].forEach(char => {
+        const span = document.createElement("span");
+        span.innerHTML = char === " " ? "&nbsp;" : char;
+
+        span.addEventListener("mouseenter", () => {
+            span.style.color = colors[Math.floor(Math.random() * colors.length)];
+            span.style.animation = "bounce 0.45s ease";
+        });
+
+        span.addEventListener("animationend", () => {
+            span.style.animation = "";
+        });
+
+        span.addEventListener("mouseleave", () => {
+            span.style.color = "#cfe9ff";
+        });
+
+        el.appendChild(span);
+    });
+}
+
+/* APPLY */
+splitBouncy(document.getElementById("line1"));
+splitBouncy(document.getElementById("line2"));
+document.querySelectorAll(".exercise").forEach(splitExercises);
+
+/* ---------- OBSERVER ---------- */
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+        }
+    });
+}, { threshold: 0.1 });
+
+observer.observe(document.getElementById("content"));
+observer.observe(document.getElementById("social"));
 </script>
 
 </body>
