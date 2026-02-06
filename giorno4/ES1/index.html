@@ -1,51 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G04E01: CSS GRrids</title>
-<Style>
-    body{ 
-        margin: 1cm 2cm;
-    }
-
-    .contenitore_principale{ 
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        column-gap: 1mm;
-        row-gap: 2mm;
-        }
-
-        
-    @media (max-Width; 700px){
-    .contenitore_principale { 
-        grid-template-columns: 1fr
-         }
-        body {
-        background-color: bisque;
-         }
-    }   
-
-</Style>
-   
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>G02N02: Noise</title>
+	<style>
+		body {
+			background-color: gray;
+		}
+	</style>
 </head>
 <body>
-    <div class="contenitore_principale">
-<div>
-Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-  </div>
-  <div>
-    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-  </div>
-  <div>
-    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-  </div>
-  <div>
-    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-    </div>
-  
+	<script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.min.js"></script>
+	<script>
 
+		function setup() {
+			createCanvas(600, 400)
+		}
 
+		function draw(){
+			background(0)
 
+			noFill()
+			stroke(255)
+
+			let sn = mouseX * 0.01
+			let depth = mouseY
+
+			for (let j=50; j<height-50; j+=6) {
+				beginShape()
+				for (let i = 0; i < width; i+=5) {
+					let n = noise(i * 0.003 + sn, j * 0.007 + frameCount * 0.01) * 300 - depth
+					n = min(0, n)
+					vertex(i, n + j)
+				}
+				endShape()
+			}
+		}
+	</script>
 </body>
 </html>
